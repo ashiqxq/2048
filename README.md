@@ -1,3 +1,6 @@
+# Live URL
+https://ashiqxq.github.io/2048/
+
 # Running the app
 
 to run the app in dev mode
