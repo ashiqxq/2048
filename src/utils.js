@@ -1,5 +1,9 @@
 import {colorMap, backgroundColorMap, initialVals} from './constants';
 
+export const detectMob = () => {
+    return (( window.innerWidth <= 600 ) && ( window.innerHeight <= 1000 ) );
+}
+
 export const squareData = (c, value) => {
     return {
       key: c,
@@ -19,7 +23,7 @@ export const getBackGroundColor = (val) => {
     if (val in backgroundColorMap){
       return backgroundColorMap[val]
     }
-    return 'black'
+    return '#ffbb33'
   }
   
 export const getFontColor = (val) => {
@@ -89,11 +93,11 @@ export const generateFreshGrid = (gridDimensions) => {
     let [x1, y1] = getGridPosition(randomGridIndex1, gridDimensions);
     let [x2, y2] = getGridPosition(randomGridIndex2, gridDimensions);
     // console.log("x1 y1", x1, y1, "x2, y2", x2, y2, initialVals[Math.floor(Math.random() * initialVals.length)])
-    // zerogrid[x1][y1] = squareData(randomGridIndex1, initialVals[Math.floor(Math.random() * initialVals.length)]) 
-    // zerogrid[x2][y2] = squareData(randomGridIndex2, initialVals[Math.floor(Math.random() * initialVals.length)]) 
-    zerogrid[0][0] = squareData(0, 2); 
+    zerogrid[x1][y1] = squareData(randomGridIndex1, initialVals[Math.floor(Math.random() * initialVals.length)]) 
+    zerogrid[x2][y2] = squareData(randomGridIndex2, initialVals[Math.floor(Math.random() * initialVals.length)]) 
+    // zerogrid[0][0] = squareData(0, 5096); 
     // zerogrid[1][0] = squareData(4, 2); 
-    zerogrid[2][0] = squareData(8, 2); 
+    // zerogrid[2][0] = squareData(8, 2); 
     // zerogrid[3][0] = squareData(12, 2); 
     // zerogrid[0][3] = squareData(3, 2); 
     return zerogrid 

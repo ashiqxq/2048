@@ -25,7 +25,7 @@ export const backgroundColorMap = {
     256: '#edcc61',
     512:  '#9c0',
     1024: 'black',
-    2048: '#7f8000'
+    2048: '#ffbb33'
   }
 
 export const initialVals = [2, 2]

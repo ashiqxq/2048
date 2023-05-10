@@ -17,13 +17,14 @@ code {
   height: 100vh;
   width: 100vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .grid-outer{
   background-color: #f2f2f2;
-  border: 3px solid #C19A6B;
+  /* border: 3px solid #C19A6B; */
 }
 
 .block{
@@ -39,3 +40,66 @@ code {
   align-items: center;
   justify-content: center;
 } */
+
+.button{
+  /* max-width: 130px; */
+  width: fit-content;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bluebutton {
+  background-color: #1089FF;
+  color: white;
+  border: 1px solid white
+}
+
+.bluebutton:hover {
+  background-color: white;
+  color: #1089FF;
+  border: 1px solid #1089FF
+}
+
+.r-c-c{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.r-c-c-c{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.m-l-5{
+  margin-left: 5px;
+}
+
+.m-l-10{
+  margin-left: 10px;
+}
+
+.m-l-15{
+  margin-left: 15px;
+}
+
+.m-l-20{
+  margin-left: 20px;
+}
+
+
+.loader {
+  border: 1px solid white;
+  border-radius: 50%;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
