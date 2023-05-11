@@ -1,58 +1,23 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import {generateFreshGrid, getFontColor, getBackGroundColor, introduceRandomCell, detectMob} from './utils'
+import {generateFreshGrid, getFontColor, getBackGroundColor, introduceRandomCell, detectIfMobile, listeners, mergeQueue} from './utils'
 import {BsFillArrowUpCircleFill, BsFillArrowDownCircleFill, BsFillInfoCircleFill} from 'react-icons/bs';
 
 let keyboardListener = null;
 
 
-const vals = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024]
-
 function App() {
 
   const moveLeft = () => {
-    let allTilesContinous = true;
     for (let i=0; i<dimensions.rows; i++){
       let queue = [];
-      let foundEmptyTile = false;
-      let continuous = true;
       for (let j=0; j<dimensions.columns; j++){
         if (grid[i][j].value!=0){
           queue.push(grid[i][j].value)
-          if (foundEmptyTile){
-            continuous = false;
-          }
-        }else{
-          foundEmptyTile = true;
         }
       }
-      let mergedQueue = [];
-      let n = queue.length;
-      console.log("queue", queue);
-      for (let k=1; k<n; k++){
-        if (queue[k]==queue[k-1]){
-          setScore((score)=>(score+2*(queue[k]+queue[k-1])))
-          mergedQueue.push(queue[k]+queue[k-1])
-          queue[k] = 0
-        }else if (n==2) {
-          mergedQueue.push(queue[k-1])
-          mergedQueue.push(queue[k])
-        }else if (k==n-1){
-          if (queue[k-1]!=0 && queue[k-1]!=queue[k]){
-            mergedQueue.push(queue[k-1])
-            mergedQueue.push(queue[k])
-          }
-          else{
-            mergedQueue.push(queue[k])
-          }
-        }else if (queue[k-1]!=0){
-          mergedQueue.push(queue[k-1])
-        }
-      }
-      if (queue.length===1){
-        mergedQueue.push(queue[0])
-      }
-      console.log("mergedqueue", mergedQueue);
+      let mergedQueue = mergeQueue(queue, setScore)
+
 
       for (let j=0; j<dimensions.columns; j++){
         if (mergedQueue.length){
@@ -62,17 +27,8 @@ function App() {
           grid[i][j].value = 0
         }
       }
-      if (continuous){
-        console.log(`${i}th row is continuos`)
-      }
-      allTilesContinous = continuous&allTilesContinous
     }
-    // if (!allTilesContinous){
       setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns]));
-    // }else{
-      // setGrid(grid);
-    // }
-
   }
 
   const moveRight = () => {
@@ -83,31 +39,7 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = [];
-      let n = queue.length;
-      for (let k=1; k<n; k++){
-        if (queue[k]==queue[k-1]){
-          setScore((score)=>(score+2*(queue[k]+queue[k-1])))
-          mergedQueue.push(queue[k]+queue[k-1])
-          queue[k] = 0
-        }else if (n==2) {
-          mergedQueue.push(queue[k-1])
-          mergedQueue.push(queue[k])
-        }else if (k==n-1){
-          if (queue[k-1]!=0 && queue[k-1]!=queue[k]){
-            mergedQueue.push(queue[k-1])
-            mergedQueue.push(queue[k])
-          }
-          else{
-            mergedQueue.push(queue[k])
-          }
-        }else if (queue[k-1]!=0){
-          mergedQueue.push(queue[k-1])
-        }
-      }
-      if (queue.length===1){
-        mergedQueue.push(queue[0])
-      }
+      let mergedQueue = mergeQueue(queue, setScore)
       for (let j=dimensions.columns-1; j>=0; j--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -128,31 +60,7 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = [];
-      let n = queue.length;
-      for (let k=1; k<n; k++){
-        if (queue[k]==queue[k-1]){
-          setScore((score)=>(score+2*(queue[k]+queue[k-1])))
-          mergedQueue.push(queue[k]+queue[k-1])
-          queue[k] = 0
-        }else if (n==2) {
-          mergedQueue.push(queue[k-1])
-          mergedQueue.push(queue[k])
-        }else if (k==n-1){
-          if (queue[k-1]!=0 && queue[k-1]!=queue[k]){
-            mergedQueue.push(queue[k-1])
-            mergedQueue.push(queue[k])
-          }
-          else{
-            mergedQueue.push(queue[k])
-          }
-        }else if (queue[k-1]!=0){
-          mergedQueue.push(queue[k-1])
-        }
-      }
-      if (queue.length===1){
-        mergedQueue.push(queue[0])
-      }
+      let mergedQueue = mergeQueue(queue, setScore)
       for (let i=0; i<dimensions.rows; i++){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -173,31 +81,7 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = [];
-      let n = queue.length;
-      for (let k=1; k<n; k++){
-        if (queue[k]==queue[k-1]){
-          setScore((score)=>(score+2*(queue[k]+queue[k-1])))
-          mergedQueue.push(queue[k]+queue[k-1])
-          queue[k] = 0
-        }else if (n==2) {
-          mergedQueue.push(queue[k-1])
-          mergedQueue.push(queue[k])
-        }else if (k==n-1){
-          if (queue[k-1]!=0 && queue[k-1]!=queue[k]){
-            mergedQueue.push(queue[k-1])
-            mergedQueue.push(queue[k])
-          }
-          else{
-            mergedQueue.push(queue[k])
-          }
-        }else if (queue[k-1]!=0){
-          mergedQueue.push(queue[k-1])
-        }
-      }
-      if (queue.length===1){
-        mergedQueue.push(queue[0])
-      }
+      let mergedQueue = mergeQueue(queue, setScore)
       for (let i=dimensions.rows-1; i>=0; i--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -213,102 +97,23 @@ function App() {
     rows: 4,
     columns: 4
   });
+  const [reload, setReload] = useState(false);
   const [grid, setGrid] = useState(generateFreshGrid([dimensions.rows, dimensions.columns]));
   const [prevGrid, setPrevGrid] = useState(grid);
   const [score, setScore] = useState(0);
-  const [containerHeight, setContainerHeight] = useState(detectMob()?300:500);
-  const [instruction, setInstruction] = useState(false);
+  const [containerHeight, setContainerHeight] = useState(detectIfMobile()?300:500);
+  const [instruction, setInstruction] = useState(true);
   useEffect(()=>{
-    keyboardListener = window.addEventListener("keydown", (event) => {
-      console.log("event", event)
-      if (event.key==='ArrowLeft'){
-        moveLeft();
-      }else if(event.key==='ArrowRight'){
-        moveRight();
-        
-      }else if(event.key==='ArrowUp'){
-        moveUp();
-      }else if(event.key==='ArrowDown'){
-        moveDown();
-      }else if(event.key==='r'){
-        resetGame(dimensions.rows, dimensions.columns);
-        setScore(0)
-      }
-    });
-    var touchStartClientX, touchStartClientY;
-    var gameContainer = document.getElementsByClassName("grid-outer")[0];
-  
-    gameContainer.addEventListener('touchstart', function (event) {
-      console.log("touch start registered")
-      if ((!window.navigator.msPointerEnabled && event.touches.length > 1) ||
-          event.targetTouches.length > 1) {
-        return; // Ignore if touching with more than 1 finger
-      }
-  
-      if (window.navigator.msPointerEnabled) {
-        touchStartClientX = event.pageX;
-        touchStartClientY = event.pageY;
-      } else {
-        touchStartClientX = event.touches[0].clientX;
-        touchStartClientY = event.touches[0].clientY;
-      }
-  
-      event.preventDefault();
-    });
-  
-    gameContainer.addEventListener('touchmove', function (event) {
-      event.preventDefault();
-    });
-  
-    gameContainer.addEventListener('touchend', function (event) {
-      console.log("touch end registered")
-      if ((!window.navigator.msPointerEnabled && event.touches.length > 0) ||
-          event.targetTouches.length > 0) {
-        return; // Ignore if still touching with one or more fingers
-      }
-  
-      var touchEndClientX, touchEndClientY;
-  
-      if (window.navigator.msPointerEnabled) {
-        touchEndClientX = event.pageX;
-        touchEndClientY = event.pageY;
-      } else {
-        touchEndClientX = event.changedTouches[0].clientX;
-        touchEndClientY = event.changedTouches[0].clientY;
-      }
-  
-      var dx = touchEndClientX - touchStartClientX;
-      var absDx = Math.abs(dx);
-  
-      var dy = touchEndClientY - touchStartClientY;
-      var absDy = Math.abs(dy);
-  
-      if (Math.max(absDx, absDy) > 10) {
-        // (right : left) : (down : up)
-        if (absDx>absDy){
-          if (dx>0){
-            moveRight()
-          }else{
-            moveLeft()
-          }
-        }else{
-          if (dy>0){
-            moveDown()
-          }else{
-            moveUp()
-          }
-        }
-      }
-    });
-  
+    keyboardListener = listeners(moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions)
     return () => {
 
     }
-  }, [dimensions.rows]);
+  }, [dimensions.rows, reload]);
 
   const resetGame = (rows, columns) => {
     setGrid(generateFreshGrid([rows, columns]));
     setScore(0)
+    setReload(!reload)
   }
 
   const onGridSizeChange = (direction) => {
@@ -367,7 +172,7 @@ function App() {
       </div>
       {
         instruction?
-        detectMob()?
+        detectIfMobile()?
         <>
           <div style={{marginTop:10}}> Swipe to move the tiles </div>
         </>

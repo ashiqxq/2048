@@ -1,6 +1,6 @@
 import {colorMap, backgroundColorMap, initialVals} from './constants';
 
-export const detectMob = () => {
+export const detectIfMobile = () => {
     return (( window.innerWidth <= 600 ) && ( window.innerHeight <= 1000 ) );
 }
 
@@ -77,7 +77,6 @@ export const introduceRandomCell = (grid, gridDimensions) => {
     while (grid[x][y].value!=0){
         randomGridIndex = generateRandomNumber(0, maxgridIndex);
         [x, y] = getGridPosition(randomGridIndex, gridDimensions)
-        console.log("xy", x, y, randomGridIndex)
     }
     grid[x][y].value = 2
     return [...grid]
@@ -92,7 +91,6 @@ export const generateFreshGrid = (gridDimensions) => {
     }
     let [x1, y1] = getGridPosition(randomGridIndex1, gridDimensions);
     let [x2, y2] = getGridPosition(randomGridIndex2, gridDimensions);
-    // console.log("x1 y1", x1, y1, "x2, y2", x2, y2, initialVals[Math.floor(Math.random() * initialVals.length)])
     zerogrid[x1][y1] = squareData(randomGridIndex1, initialVals[Math.floor(Math.random() * initialVals.length)]) 
     zerogrid[x2][y2] = squareData(randomGridIndex2, initialVals[Math.floor(Math.random() * initialVals.length)]) 
     // zerogrid[0][0] = squareData(0, 5096); 
@@ -101,4 +99,113 @@ export const generateFreshGrid = (gridDimensions) => {
     // zerogrid[3][0] = squareData(12, 2); 
     // zerogrid[0][3] = squareData(3, 2); 
     return zerogrid 
+  }
+
+export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions) => {
+    window.addEventListener("keydown", (event) => {
+        if (event.key==='ArrowLeft'){
+          moveLeft();
+        }else if(event.key==='ArrowRight'){
+          moveRight();
+          
+        }else if(event.key==='ArrowUp'){
+          moveUp();
+        }else if(event.key==='ArrowDown'){
+          moveDown();
+        }else if(event.key==='r'){
+          resetGame(dimensions.rows, dimensions.columns);
+        }
+      });
+      var touchStartClientX, touchStartClientY;
+      var gameContainer = document.getElementsByClassName("grid-outer")[0];
+    
+      gameContainer.addEventListener('touchstart', function (event) {
+        if ((!window.navigator.msPointerEnabled && event.touches.length > 1) ||
+            event.targetTouches.length > 1) {
+          return; // Ignore if touching with more than 1 finger
+        }
+    
+        if (window.navigator.msPointerEnabled) {
+          touchStartClientX = event.pageX;
+          touchStartClientY = event.pageY;
+        } else {
+          touchStartClientX = event.touches[0].clientX;
+          touchStartClientY = event.touches[0].clientY;
+        }
+    
+        event.preventDefault();
+      });
+    
+      gameContainer.addEventListener('touchmove', function (event) {
+        event.preventDefault();
+      });
+    
+      gameContainer.addEventListener('touchend', function (event) {
+        if ((!window.navigator.msPointerEnabled && event.touches.length > 0) ||
+            event.targetTouches.length > 0) {
+          return; // Ignore if still touching with one or more fingers
+        }
+    
+        var touchEndClientX, touchEndClientY;
+    
+        if (window.navigator.msPointerEnabled) {
+          touchEndClientX = event.pageX;
+          touchEndClientY = event.pageY;
+        } else {
+          touchEndClientX = event.changedTouches[0].clientX;
+          touchEndClientY = event.changedTouches[0].clientY;
+        }
+    
+        var dx = touchEndClientX - touchStartClientX;
+        var absDx = Math.abs(dx);
+    
+        var dy = touchEndClientY - touchStartClientY;
+        var absDy = Math.abs(dy);
+    
+        if (Math.max(absDx, absDy) > 10) {
+          // (right : left) : (down : up)
+          if (absDx>absDy){
+            if (dx>0){
+              moveRight()
+            }else{
+              moveLeft()
+            }
+          }else{
+            if (dy>0){
+              moveDown()
+            }else{
+              moveUp()
+            }
+          }
+        }
+      });
+}
+
+export const mergeQueue = (queue, setScore) => {
+    let mergedQueue = [];
+    let n = queue.length;
+    for (let k=1; k<n; k++){
+      if (queue[k]==queue[k-1]){
+        setScore((score)=>(score+2*(queue[k]+queue[k-1])))
+        mergedQueue.push(queue[k]+queue[k-1])
+        queue[k] = 0
+      }else if (n==2) {
+        mergedQueue.push(queue[k-1])
+        mergedQueue.push(queue[k])
+      }else if (k==n-1){
+        if (queue[k-1]!=0 && queue[k-1]!=queue[k]){
+          mergedQueue.push(queue[k-1])
+          mergedQueue.push(queue[k])
+        }
+        else{
+          mergedQueue.push(queue[k])
+        }
+      }else if (queue[k-1]!=0){
+        mergedQueue.push(queue[k-1])
+      }
+    }
+    if (queue.length===1){
+      mergedQueue.push(queue[0])
+    }
+    return mergedQueue
   }
