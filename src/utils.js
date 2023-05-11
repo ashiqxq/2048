@@ -66,11 +66,12 @@ export const checkGameOver = (grid, gridDimensions) => {
     }
     return true
 }
-export const introduceRandomCell = (grid, gridDimensions) => {
+export const introduceRandomCell = (grid, gridDimensions, setGameOver) => {
     let maxgridIndex = gridDimensions[0]*gridDimensions[1] - 1
     let randomGridIndex = generateRandomNumber(0, maxgridIndex);
     let [x, y] = getGridPosition(randomGridIndex, gridDimensions);
     let isGameOver = checkGameOver(grid, gridDimensions);
+    setGameOver(isGameOver)
     if (isGameOver){
         return [...grid]
     }
@@ -101,16 +102,16 @@ export const generateFreshGrid = (gridDimensions) => {
     return zerogrid 
   }
 
-export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions) => {
+export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions, isGameOver) => {
     window.addEventListener("keydown", (event) => {
-        if (event.key==='ArrowLeft'){
+        if (event.key==='ArrowLeft' && !isGameOver){
           moveLeft();
-        }else if(event.key==='ArrowRight'){
+        }else if(event.key==='ArrowRight' && !isGameOver){
           moveRight();
           
-        }else if(event.key==='ArrowUp'){
+        }else if(event.key==='ArrowUp' && !isGameOver){
           moveUp();
-        }else if(event.key==='ArrowDown'){
+        }else if(event.key==='ArrowDown' && !isGameOver){
           moveDown();
         }else if(event.key==='r'){
           resetGame(dimensions.rows, dimensions.columns);
@@ -162,7 +163,7 @@ export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dime
         var dy = touchEndClientY - touchStartClientY;
         var absDy = Math.abs(dy);
     
-        if (Math.max(absDx, absDy) > 10) {
+        if (Math.max(absDx, absDy) > 10 && !isGameOver) {
           // (right : left) : (down : up)
           if (absDx>absDy){
             if (dx>0){

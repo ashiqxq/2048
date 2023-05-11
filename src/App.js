@@ -28,7 +28,7 @@ function App() {
         }
       }
     }
-      setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns]));
+      setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
   }
 
   const moveRight = () => {
@@ -49,7 +49,7 @@ function App() {
         }
       }
     }
-    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns]));
+    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
   }
 
   const moveUp = () => {
@@ -70,7 +70,7 @@ function App() {
         }
       }
     }
-    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns]));
+    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
   }
 
   const moveDown = () => {
@@ -91,29 +91,31 @@ function App() {
         }
       }
     }
-    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns]));
+    setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
   }
   const [dimensions, setDimensions] = useState({
     rows: 4,
     columns: 4
   });
   const [reload, setReload] = useState(false);
+  const [isGameOver, setGameOver] = useState(false);
   const [grid, setGrid] = useState(generateFreshGrid([dimensions.rows, dimensions.columns]));
   const [prevGrid, setPrevGrid] = useState(grid);
   const [score, setScore] = useState(0);
   const [containerHeight, setContainerHeight] = useState(detectIfMobile()?300:500);
   const [instruction, setInstruction] = useState(true);
   useEffect(()=>{
-    keyboardListener = listeners(moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions)
+    keyboardListener = listeners(moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions, isGameOver)
     return () => {
 
     }
-  }, [dimensions.rows, reload]);
+  }, [dimensions.rows, reload, isGameOver]);
 
   const resetGame = (rows, columns) => {
     setGrid(generateFreshGrid([rows, columns]));
     setScore(0)
     setReload(!reload)
+    setGameOver(false);
   }
 
   const onGridSizeChange = (direction) => {
@@ -153,7 +155,7 @@ function App() {
             }
         </div>
       </div>
-      <div className="grid-outer">
+      <div className="grid-outer" style={{position:"relative"}}>
         {
               grid.map((row, rowIndex)=>(
                   <div key={`row ${rowIndex}`} style={{display:"flex", flexDirection:"row"}}>
@@ -169,6 +171,13 @@ function App() {
                   </div>
               ))
           }
+          {
+            isGameOver?
+            <div style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", width:"100%", height:"100%", position:"absolute", backgroundColor:"white", top:0, opacity:0.8, color:"#C19A6B", fontSize:60, fontWeight:"700"}}>
+              GAME OVER {'\n'} <br/> <span style={{fontSize:20}}>press 'r' to play again</span>
+            </div>
+            :null
+          }
       </div>
       {
         instruction?
@@ -179,7 +188,7 @@ function App() {
         :
         <>
           <div style={{marginTop:10}}> Use ← ↑ → ↓ arrow keys to move the tiles </div>
-          <div> Click R to reload </div>
+          <div> Click R to restart the game </div>
         </>
         :null
       }
