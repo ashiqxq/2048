@@ -16,5 +16,6 @@ to run the app in dev mode
 # Game implementation logic
 
 The logic used here is fairly easy, we use a slide and merge technique. 
-i.e slide the non empty tiles into a queue
-and then merge the consecutive pair of identical tiles
+i.e 
+1. slide the non empty tiles into a queue
+2. and then merge the consecutive pair of identical tiles in the queue
