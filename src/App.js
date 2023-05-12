@@ -109,7 +109,6 @@ function App() {
   const [reload, setReload] = useState(false);
   const [isGameOver, setGameOver] = useState(false);
   // const [grid, setGrid] = useState(generateFreshGrid([dimensions.rows, dimensions.columns]));
-  const [prevGrid, setPrevGrid] = useState(grid);
   const [score, setScore] = useState(0);
   const [containerHeight, setContainerHeight] = useState(detectIfMobile()?300:500);
   const [instruction, setInstruction] = useState(true);
@@ -158,9 +157,6 @@ function App() {
         <div style={{backgroundColor:"#C19A6B", borderRadius:10, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:5}}>
           <div style={{color:"white", fontSize:12}}>Score</div>
           <div style={{color:"white", fontSize:12, fontWeight:"700"}}>{score}</div>
-        </div>
-        <div style={{cursor:"pointer"}}>
-          <BiUndo style={{color:"white", backgroundColor:"C19A6B", borderRadius:10, fontSize:16, padding:2}}/>
         </div>
         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
             {
