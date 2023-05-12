@@ -16,7 +16,7 @@ to run the app in dev mode
 
 * game will not be over when all the tiles are filled, instead it will be over only if no more merging of tiles is possible,
 * i.e even if the grid is filled, if there are adjacent numbers with equal values, you can still continue playing.
-* The game will be over only when all tiles are filled, and there are no two similar numbers adjacent
+* The game will be over only when all tiles are filled, and there are no two similar numbers adjacent either vertically or horizontally
 
 
 # Game implementation logic
