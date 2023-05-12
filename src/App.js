@@ -1,14 +1,19 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {generateFreshGrid, getFontColor, getBackGroundColor, introduceRandomCell, detectIfMobile, listeners, mergeQueue} from './utils'
 import {BsFillArrowUpCircleFill, BsFillArrowDownCircleFill, BsFillInfoCircleFill} from 'react-icons/bs';
+import {BiUndo} from 'react-icons/bi';
 
 let keyboardListener = null;
-
+let grid = [[]];
+let dimensions = {
+  rows: 4,
+  columns: 4
+}
 
 function App() {
 
-  const moveLeft = () => {
+  const moveLeft = useCallback(() => {
     for (let i=0; i<dimensions.rows; i++){
       let queue = [];
       for (let j=0; j<dimensions.columns; j++){
@@ -16,7 +21,9 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = mergeQueue(queue, setScore)
+      let mergedQueue = mergeQueue(queue, (func)=>{
+        setScore(func)
+      })
 
 
       for (let j=0; j<dimensions.columns; j++){
@@ -29,9 +36,9 @@ function App() {
       }
     }
       setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
-  }
+  }, [])
 
-  const moveRight = () => {
+  const moveRight = useCallback(() => {
     for (let i=0; i<dimensions.rows; i++){
       let queue = [];
       for (let j=dimensions.columns-1; j>=0; j--){
@@ -39,7 +46,9 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = mergeQueue(queue, setScore)
+      let mergedQueue = mergeQueue(queue, (func)=>{
+        setScore(func)
+      })
       for (let j=dimensions.columns-1; j>=0; j--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -50,9 +59,9 @@ function App() {
       }
     }
     setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
-  }
+  }, [])
 
-  const moveUp = () => {
+  const moveUp = useCallback(() => {
     for (let j=0; j<dimensions.columns; j++){
       let queue = [];
       for (let i=0; i<dimensions.rows; i++){
@@ -60,7 +69,9 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = mergeQueue(queue, setScore)
+      let mergedQueue = mergeQueue(queue, (func)=>{
+        setScore(func)
+      })
       for (let i=0; i<dimensions.rows; i++){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -71,9 +82,9 @@ function App() {
       }
     }
     setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
-  }
+  }, [])
 
-  const moveDown = () => {
+  const moveDown = useCallback(() => {
     for (let j=0; j<dimensions.columns; j++){
       let queue = [];
       for (let i=dimensions.rows-1; i>=0; i--){
@@ -81,7 +92,9 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
-      let mergedQueue = mergeQueue(queue, setScore)
+      let mergedQueue = mergeQueue(queue, (func)=>{
+        setScore(func)
+      })
       for (let i=dimensions.rows-1; i>=0; i--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -92,24 +105,25 @@ function App() {
       }
     }
     setGrid(introduceRandomCell(grid, [dimensions.rows, dimensions.columns], setGameOver));
-  }
-  const [dimensions, setDimensions] = useState({
-    rows: 4,
-    columns: 4
-  });
+  }, [])
   const [reload, setReload] = useState(false);
   const [isGameOver, setGameOver] = useState(false);
-  const [grid, setGrid] = useState(generateFreshGrid([dimensions.rows, dimensions.columns]));
+  // const [grid, setGrid] = useState(generateFreshGrid([dimensions.rows, dimensions.columns]));
   const [prevGrid, setPrevGrid] = useState(grid);
   const [score, setScore] = useState(0);
   const [containerHeight, setContainerHeight] = useState(detectIfMobile()?300:500);
   const [instruction, setInstruction] = useState(true);
+  const setGrid = (newGrid) => {
+    grid = newGrid
+    setReload((reload)=>(!reload))
+  }
   useEffect(()=>{
+    setGrid(generateFreshGrid([dimensions.rows, dimensions.columns]))
     keyboardListener = listeners(moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions, isGameOver)
     return () => {
 
     }
-  }, [dimensions.rows, reload, isGameOver]);
+  }, [dimensions.rows]);
 
   const resetGame = (rows, columns) => {
     setGrid(generateFreshGrid([rows, columns]));
@@ -118,14 +132,18 @@ function App() {
     setGameOver(false);
   }
 
+  const setDimensions = (newSize) => {
+    dimensions = {
+      rows: newSize,
+      columns: newSize
+    }
+  }
+
   const onGridSizeChange = (direction) => {
     let newSize = dimensions.rows+direction;
     newSize = Math.min(newSize, 10);
     newSize = Math.max(1, newSize);
-    setDimensions({
-      rows: newSize,
-      columns: newSize
-    })
+    setDimensions(newSize)
     resetGame(newSize, newSize)
   }
   return (
@@ -135,11 +153,14 @@ function App() {
           2048
         </div>
         <div style={{cursor:"pointer"}} onClick={()=>{setInstruction(!instruction)}}>
-          <BsFillInfoCircleFill style={{color:"#C19A6B"}}/>
+          <BsFillInfoCircleFill style={{color:"#C19A6B", fontSize:20}}/>
         </div>
         <div style={{backgroundColor:"#C19A6B", borderRadius:10, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:5}}>
           <div style={{color:"white", fontSize:12}}>Score</div>
           <div style={{color:"white", fontSize:12, fontWeight:"700"}}>{score}</div>
+        </div>
+        <div style={{cursor:"pointer"}}>
+          <BiUndo style={{color:"white", backgroundColor:"C19A6B", borderRadius:10, fontSize:16, padding:2}}/>
         </div>
         <div style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
             {
