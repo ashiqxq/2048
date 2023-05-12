@@ -11,15 +11,14 @@ export const squareData = (c, value) => {
     }
   }
 
-export const generateRandomNumber = (min, max, sparse=false) => {
+export const generateRandomNumber = (min, max) => {
+  //generates a random number b/w min and max
     let n = Math.floor(Math.random() * (max - min + 1)) + min;
-    if (sparse){
-      n = Math.floor(Math.random() * (max - min + 1) * Math.random()) + min;
-    }
-  return n
+    return n
   }
 
 export const getBackGroundColor = (val) => {
+    //gets backgroundcolor for each tile
     if (val in backgroundColorMap){
       return backgroundColorMap[val]
     }
@@ -27,6 +26,7 @@ export const getBackGroundColor = (val) => {
   }
   
 export const getFontColor = (val) => {
+    //gets font color for each tile
     if (val in colorMap){
       return colorMap[val]
     }
@@ -85,6 +85,8 @@ export const generateZeroGrid = (gridDimensions) => {
           queue.push(grid[i][j].value)
         }
         let mergedQueue = mergeQueue(queue, ()=>{})
+        // if length of possible merged queue and existing is not equal, then merging is possible
+        // thus game is not over
         if (mergedQueue.length!=queue.length){
           return false
         }
@@ -102,6 +104,7 @@ export const introduceRandomCell = (grid, gridDimensions, setGameOver) => {
         return [...grid]
     }
     if (emptyTilesPresent){
+      //if empty tiles are there we will generate a random index (x, y) that is empty, to fill the new tile
       while (grid[x][y].value!=0){
         randomGridIndex = generateRandomNumber(0, maxgridIndex);
         [x, y] = getGridPosition(randomGridIndex, gridDimensions)
@@ -122,11 +125,6 @@ export const generateFreshGrid = (gridDimensions) => {
     let [x2, y2] = getGridPosition(randomGridIndex2, gridDimensions);
     zerogrid[x1][y1] = squareData(randomGridIndex1, initialVals[Math.floor(Math.random() * initialVals.length)]) 
     zerogrid[x2][y2] = squareData(randomGridIndex2, initialVals[Math.floor(Math.random() * initialVals.length)]) 
-    // zerogrid[0][0] = squareData(0, 5096); 
-    // zerogrid[1][0] = squareData(4, 2); 
-    // zerogrid[2][1] = squareData(9, 2); 
-    // zerogrid[3][2] = squareData(14, 2); 
-    // zerogrid[0][3] = squareData(3, 2); 
     return zerogrid 
   }
 
@@ -206,8 +204,11 @@ export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dime
         resetGame(dimensions.rows, dimensions.columns);
       }
     }
+
+    //listener for keyboard events
     window.addEventListener("keydown", onKeyDown, false);
 
+    //listener for touch events in mobile devices
     gameContainer.addEventListener('touchstart', onTouchStart,);
   
     gameContainer.addEventListener('touchmove', onTouchMove);

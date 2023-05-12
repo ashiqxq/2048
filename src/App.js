@@ -2,7 +2,6 @@ import './App.css';
 import { useCallback, useEffect, useState } from 'react';
 import {generateFreshGrid, getFontColor, getBackGroundColor, introduceRandomCell, detectIfMobile, listeners, mergeQueue} from './utils'
 import {BsFillArrowUpCircleFill, BsFillArrowDownCircleFill, BsFillInfoCircleFill} from 'react-icons/bs';
-import {BiUndo} from 'react-icons/bi';
 
 let keyboardListener = null;
 let grid = [[]];
@@ -14,6 +13,8 @@ let dimensions = {
 function App() {
 
   const moveLeft = useCallback(() => {
+    //(1) for a left arrow press or left swipe, we will loop rows from left to right,
+    //(2)  and slide all the non empty elements to the queue
     for (let i=0; i<dimensions.rows; i++){
       let queue = [];
       for (let j=0; j<dimensions.columns; j++){
@@ -21,11 +22,13 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
+      //(3) from the slided queue, we will merge the consecutive pairs of identical elements, 
+      //(4) the mergequeue function takes care of the same
       let mergedQueue = mergeQueue(queue, (func)=>{
         setScore(func)
       })
 
-
+      //(5) once the merged queue is found we will fill the grid rows from left to right
       for (let j=0; j<dimensions.columns; j++){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -39,6 +42,8 @@ function App() {
   }, [])
 
   const moveRight = useCallback(() => {
+    //(6) for a right arrow press or right swipe, we will loop rows from right to left,
+    //(7)  and slide all the non empty elements to the queue
     for (let i=0; i<dimensions.rows; i++){
       let queue = [];
       for (let j=dimensions.columns-1; j>=0; j--){
@@ -46,9 +51,11 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
+      //same as (3) and (4)
       let mergedQueue = mergeQueue(queue, (func)=>{
         setScore(func)
       })
+      //(8) once the merged queue is found we will fill the grid rows from right to left
       for (let j=dimensions.columns-1; j>=0; j--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -62,6 +69,8 @@ function App() {
   }, [])
 
   const moveUp = useCallback(() => {
+    //(9) for a up arrow press or up swipe, we will loop columns from top to bottom,
+    //(10)  and slide all the non empty elements to the queue
     for (let j=0; j<dimensions.columns; j++){
       let queue = [];
       for (let i=0; i<dimensions.rows; i++){
@@ -69,9 +78,11 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
+      //same as (3) and (4)
       let mergedQueue = mergeQueue(queue, (func)=>{
         setScore(func)
       })
+      //(11) once the merged queue is found we will fill the grid rows from top to bottom
       for (let i=0; i<dimensions.rows; i++){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
@@ -85,6 +96,8 @@ function App() {
   }, [])
 
   const moveDown = useCallback(() => {
+    //(12) for a up arrow press or up swipe, we will loop columns from bottom to top,
+    //(13)  and slide all the non empty elements to the queue
     for (let j=0; j<dimensions.columns; j++){
       let queue = [];
       for (let i=dimensions.rows-1; i>=0; i--){
@@ -92,9 +105,11 @@ function App() {
           queue.push(grid[i][j].value)
         }
       }
+      //same as (3) and (4)
       let mergedQueue = mergeQueue(queue, (func)=>{
         setScore(func)
       })
+      //(14) once the merged queue is found we will fill the grid rows from bottom to top
       for (let i=dimensions.rows-1; i>=0; i--){
         if (mergedQueue.length){
           let gridElement = mergedQueue.shift();
