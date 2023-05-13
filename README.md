@@ -11,7 +11,7 @@ to run the app in dev mode
 # Playing the game
 
 1. In pc/mac -> use the arrow keys to move the tiles, and 'r' to refresh the grid
-2. In mobile -> swipe on the board to move the tiles, and double tap the screen to refresh the grid
+2. In mobile -> swipe on the board to move the tiles, and double tap the board to refresh the grid
 
 # Implementation detail
 
