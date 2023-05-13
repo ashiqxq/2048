@@ -137,10 +137,10 @@ function App() {
     return () => {
 
     }
-  }, [dimensions.rows]);
+  }, []);
 
-  const resetGame = (rows, columns) => {
-    setGrid(generateFreshGrid([rows, columns]));
+  const resetGame = () => {
+    setGrid(generateFreshGrid([dimensions.rows, dimensions.columns]));
     setScore(0)
     setGameOver(false);
   }
