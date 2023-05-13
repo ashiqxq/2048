@@ -142,7 +142,6 @@ function App() {
   const resetGame = (rows, columns) => {
     setGrid(generateFreshGrid([rows, columns]));
     setScore(0)
-    setReload(!reload)
     setGameOver(false);
   }
 
@@ -205,8 +204,8 @@ function App() {
           }
           {
             isGameOver?
-            <div style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", width:"100%", height:"100%", position:"absolute", backgroundColor:"white", top:0, opacity:0.8, color:"#C19A6B", fontSize:60, fontWeight:"700"}}>
-              GAME OVER {'\n'} <br/> <span style={{fontSize:20}}>press 'r' to play again</span>
+            <div style={{display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", width:"100%", height:"100%", position:"absolute", backgroundColor:"white", top:0, opacity:0.8, color:"#C19A6B", fontSize:detectIfMobile()?30:60, fontWeight:"700"}}>
+              GAME OVER {'\n'} <br/> <span style={{fontSize:detectIfMobile()?14:20}}>{detectIfMobile()?'Double tap the board to play again': `press 'r' to play again`}</span>
             </div>
             :null
           }
@@ -216,6 +215,7 @@ function App() {
         detectIfMobile()?
         <>
           <div style={{marginTop:10}}> Swipe to move the tiles </div>
+          <div> Double tap the board to restart the game </div>
         </>
         :
         <>

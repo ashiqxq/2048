@@ -127,7 +127,7 @@ export const generateFreshGrid = (gridDimensions) => {
     zerogrid[x2][y2] = squareData(randomGridIndex2, initialVals[Math.floor(Math.random() * initialVals.length)]) 
     return zerogrid 
   }
-
+var tapped=false
 export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dimensions, isGameOver) => {
     var touchStartClientX, touchStartClientY;
     var gameContainer = document.getElementsByClassName("grid-outer")[0];
@@ -175,6 +175,17 @@ export const listeners = (moveLeft, moveRight, moveUp, moveDown, resetGame, dime
       event.preventDefault();
     }
     const onTouchStart = (event) => {
+      if(!tapped){ //if tap is not set, set up single tap
+        tapped=setTimeout(function(){
+            tapped=null
+            //insert things you want to do when single tapped
+        },300);   //wait 300ms then run single click code
+      } else {    //tapped within 300ms of last tap. double tap
+        clearTimeout(tapped); //stop single tap callback
+        tapped=null
+      //insert things you want to do when double tapped
+        resetGame(dimensions.rows, dimensions.columns);
+      }
       if ((!window.navigator.msPointerEnabled && event.touches.length > 1) ||
           event.targetTouches.length > 1) {
         return; // Ignore if touching with more than 1 finger
